@@ -1,6 +1,6 @@
-def main():
-    print("Hello from fastapi-quizbot!")
+from fastapi import FastAPI
 
+from src.domain.router import router
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+app.include_router(router=router)
