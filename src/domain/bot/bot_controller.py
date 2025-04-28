@@ -11,10 +11,10 @@ router = APIRouter(prefix="/v1")
 telegram = Telegram(settings.TELEGRAM_BOT_TOKEN)
 
 
-@router.post("/")
+@router.post(f"/{settings.TELEGRAM_BOT_TOKEN.get_secret_value()}")
 async def webhook(request: Request):
     r = await request.json()
-    r = Update.parse_obj(r)
+    r = Update.model_validate(r)
     debug(r)
     return "OK"
 
