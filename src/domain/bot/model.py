@@ -9,17 +9,17 @@ class User(BaseModel):
     id: int
     is_bot: bool
     first_name: str
-    last_name: str
-    username: str
+    last_name: str | None = None
+    username: str | None = None
     language_code: str
 
 
 class Chat(BaseModel):
     id: int
     type: ChatTypeEnum
-    first_name: str | None
-    last_name: str | None
-    username: str | None
+    first_name: str | None = None
+    last_name: str | None = None
+    username: str | None = None
 
 
 class Message(BaseModel):
@@ -37,4 +37,4 @@ class Message(BaseModel):
 
 class Update(BaseModel):
     update_id: int
-    message: Message | None
+    message: Message | None = None
