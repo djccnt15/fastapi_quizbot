@@ -1,9 +1,13 @@
-from devtools import debug
-from fastapi import APIRouter, Body, Request
+from typing import Annotated
+
+from fastapi import APIRouter, Body, Depends, Request
 from pydantic import HttpUrl
+from sqlalchemy.orm.session import Session
 
 from src.configuration.config import settings
+from src.configuration.database import get_db
 from src.core.telegram import Telegram
+from src.db.entity import UserEntity
 
 from .model import Update
 
@@ -12,10 +16,26 @@ telegram = Telegram(settings.TELEGRAM_BOT_TOKEN)
 
 
 @router.post(f"/{settings.TELEGRAM_BOT_TOKEN.get_secret_value()}")
-async def webhook(request: Request):
-    r = await request.json()
-    r = Update.model_validate(r)
-    debug(r)
+async def webhook(
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+):
+    req = await request.json()
+    update = Update.model_validate(req)
+    assert update.message
+    user = update.message.from_
+    assert user
+    db_user = db.query(UserEntity).filter_by(id=user.id).first()
+
+    if not db_user:
+        row = UserEntity(
+            id=user.id,
+            username=user.username,
+            first_name=user.first_name,
+            last_name=user.last_name,
+        )
+        db.add(row)
+        db.commit()
     return "OK"
 
 
