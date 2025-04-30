@@ -8,7 +8,7 @@ from src.db.entity import UserEntity
 
 from .model import User
 
-router = APIRouter()
+router = APIRouter(prefix="/v1/user")
 
 
 @router.get("")

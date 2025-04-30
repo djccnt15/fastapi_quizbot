@@ -12,7 +12,7 @@ from src.domain.enums import ResponseEnum
 
 from .model import Update
 
-router = APIRouter(prefix="/v1")
+router = APIRouter(prefix="/v1/bot")
 telegram = Telegram(settings.TELEGRAM_BOT_TOKEN)
 
 
