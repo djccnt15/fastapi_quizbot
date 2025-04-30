@@ -8,6 +8,7 @@ from src.configuration.config import settings
 from src.configuration.database import get_db
 from src.core.telegram import Telegram
 from src.db.entity import UserEntity
+from src.domain.enums import ResponseEnum
 
 from .model import Update
 
@@ -19,7 +20,7 @@ telegram = Telegram(settings.TELEGRAM_BOT_TOKEN)
 async def webhook(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-):
+) -> ResponseEnum:
     req = await request.json()
     update = Update.model_validate(req)
     assert update.message
@@ -36,7 +37,7 @@ async def webhook(
         )
         db.add(row)
         db.commit()
-    return "OK"
+    return ResponseEnum.OK
 
 
 @router.get("/me")
