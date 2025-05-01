@@ -4,6 +4,7 @@ from enum import StrEnum, auto
 class DomainEnum(StrEnum):
     BOT = auto()
     USER = auto()
+    QUIZ = auto()
 
 
 class ResponseEnum(StrEnum):
