@@ -7,8 +7,8 @@ from sqlalchemy.orm.session import Session
 from src.configuration.config import settings
 from src.configuration.database import get_db
 from src.core.telegram import Telegram
-from src.db.entity import UserEntity
 from src.domain.enums import ResponseEnum
+from src.domain.user import user_service
 
 from .model import Update
 
@@ -23,20 +23,13 @@ async def webhook(
 ) -> ResponseEnum:
     req = await request.json()
     update = Update.model_validate(req)
-    assert update.message
-    user = update.message.from_
+    message = update.message
+    assert message
+    user = message.from_
     assert user
-    db_user = db.query(UserEntity).filter_by(id=user.id).first()
-
+    db_user = user_service.get_user_by_id(user=user, db=db)
     if not db_user:
-        row = UserEntity(
-            id=user.id,
-            username=user.username,
-            first_name=user.first_name,
-            last_name=user.last_name,
-        )
-        db.add(row)
-        db.commit()
+        user_service.create_user(user=user, db=db)
     return ResponseEnum.OK
 
 
