@@ -28,7 +28,9 @@ class UserEntity(BaseMixin, Base):
     score: Mapped[int] = mapped_column(Integer, default=0)
     quiz_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("quiz.id"))
 
-    quiz = relationship("QuizEntity", back_populates="current_users", uselist=False)
+    quiz: Mapped["QuizEntity"] = relationship(
+        "QuizEntity", back_populates="current_users", uselist=False
+    )
 
 
 class QuizEntity(BaseMixin, Base):
@@ -39,4 +41,6 @@ class QuizEntity(BaseMixin, Base):
     content: Mapped[str] = mapped_column(Text)
     answer: Mapped[str] = mapped_column(Integer)
 
-    current_users = relationship("UserEntity", back_populates="quiz")
+    current_users: Mapped["UserEntity"] = relationship(
+        "UserEntity", back_populates="quiz"
+    )

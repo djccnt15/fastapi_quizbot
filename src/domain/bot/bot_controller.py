@@ -25,23 +25,19 @@ async def webhook(
     req = await request.json()
     update = Update.model_validate(req)
     message = update.message
-    assert message
     user = message.from_
-    assert user
     db_user = user_service.get_user_by_id(user=user, db=db)
     if not db_user:
         user_service.create_user(user=user, db=db)
     assert db_user
 
-    text = message.text
-    assert text
     msg = "✨ '문제' 또는 '퀴즈'라고 말씀하시면 문제를 냅니다!"
-    if "문제" in text or "퀴즈" in text:
+    if "문제" in message.text or "퀴즈" in message.text:
         quiz = quiz_service.get_rand_quiz(db=db)
         db_user.quiz_id = quiz.id
         msg = f"{quiz.question}\n\n{quiz.content}"
-    elif db_user.quiz_id and text.isnumeric():
-        correct = db_user.quiz.answer == int(text)
+    elif db_user.quiz_id and message.text.isnumeric():
+        correct = db_user.quiz.answer == int(message.text)
         msg = f"아쉽네요, {db_user.quiz.answer}번이 정답입니다."
 
         if correct:

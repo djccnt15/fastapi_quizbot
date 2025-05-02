@@ -24,17 +24,16 @@ class Chat(BaseModel):
 
 class Message(BaseModel):
     message_id: int
-    from_: User | None = Field(
-        None,
+    from_: User = Field(
         title="Sender",
         description="Sender, empty for messages sent to channels",
         alias="from",
     )
     chat: Chat
     date: datetime
-    text: str | None = Field(None, max_length=4096)
+    text: str = Field("", max_length=4096)
 
 
 class Update(BaseModel):
     update_id: int
-    message: Message | None = None
+    message: Message
