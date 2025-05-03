@@ -62,5 +62,5 @@ async def get_webhook():
 
 
 @router.post("/wb")
-async def set_webhook(url: HttpUrl = Body(..., embed=True)):
-    return await telegram.set_webhook(url)
+async def set_webhook(url: Annotated[HttpUrl, Body(..., embed=True)]):
+    return await telegram.set_webhook(str(url))
