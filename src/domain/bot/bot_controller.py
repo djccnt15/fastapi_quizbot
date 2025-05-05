@@ -33,6 +33,9 @@ async def webhook(
     msg = "✨ '문제' 또는 '퀴즈'라고 말씀하시면 문제를 냅니다!"
     if "문제" in message.text or "퀴즈" in message.text:
         quiz = quiz_service.get_rand_quiz(db=db)
+        if not quiz:
+            await telegram.send_message(message.chat.id, "퀴즈가 없습니다")
+            return ResponseEnum.OK
         db_user.quiz_id = quiz.id
         msg = f"{quiz.question}\n\n{quiz.content}"
     elif db_user.quiz_id and message.text.isnumeric():
