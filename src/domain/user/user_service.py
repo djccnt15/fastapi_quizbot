@@ -9,7 +9,7 @@ def get_user_by_id(user: BotUser, db: Session) -> UserEntity | None:
     return user
 
 
-def create_user(user: BotUser, db: Session) -> None:
+def create_user(user: BotUser, db: Session) -> UserEntity:
     row = UserEntity(
         id=user.id,
         username=user.username,
@@ -18,3 +18,4 @@ def create_user(user: BotUser, db: Session) -> None:
     )
     db.add(row)
     db.commit()
+    return row

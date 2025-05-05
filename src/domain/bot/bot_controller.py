@@ -28,8 +28,7 @@ async def webhook(
     user = message.from_
     db_user = user_service.get_user_by_id(user=user, db=db)
     if not db_user:
-        user_service.create_user(user=user, db=db)
-    assert db_user
+        db_user = user_service.create_user(user=user, db=db)
 
     msg = "✨ '문제' 또는 '퀴즈'라고 말씀하시면 문제를 냅니다!"
     if "문제" in message.text or "퀴즈" in message.text:
