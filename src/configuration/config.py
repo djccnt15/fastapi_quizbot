@@ -2,10 +2,15 @@ import os
 from functools import lru_cache
 
 from pydantic import SecretStr
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
+
     DB_USERNAME: str
     DB_PASSWORD: SecretStr
     DB_HOST: str
@@ -14,10 +19,6 @@ class Settings(BaseSettings):
 
     TELEGRAM_BOT_TOKEN: SecretStr
     TESTING: bool = False
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 
 class TestSettings(BaseSettings):
@@ -34,7 +35,7 @@ class TestSettings(BaseSettings):
 @lru_cache
 def get_settings():
 
-    if os.environ.get("APP_ENV", "").lower() == "test":
+    if os.environ.get("APP_ENV", "dev").lower() == "test":
         return TestSettings()
     return Settings()
 
